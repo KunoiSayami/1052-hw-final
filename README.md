@@ -2,6 +2,6 @@
 
 APPLIED PROGRAMMING Final Homework
 
-# LICENSE
+## LICENSE
 
 General Public License 3
