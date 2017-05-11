@@ -29,7 +29,7 @@ class cardstore{
 	public int getNextPoint(){
 		if (step+player*2>52)
 			this.initCard();
-		return (card[step++]+1%13)>10?10:card[step-1];
+		return ((card[step++]+1)%13)>10?10:card[step-1];
 	}
 }
 
