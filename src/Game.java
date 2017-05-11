@@ -6,6 +6,13 @@
  */
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import java.awt.Container;
 import java.util.*;
 
 class _cardStore{
@@ -39,6 +46,25 @@ class _cardStore{
 	}
 }
 
-public class Game {
+public class Game extends JFrame{
 	_cardStore cardStore;
+	static int maxplayer = 4;
+	Game(){
+		super("21 point");
+		cardStore = new _cardStore(this.playerchoose());
+	}
+	private int playerchoose(){
+		String playerstr = JOptionPane.showInputDialog("Please input player count");
+		String rematch = "^[1-9]$";
+		Pattern r = Pattern.compile(rematch);
+		Matcher m = r.matcher(playerstr);
+		if (!m.find())
+			JOptionPane.showMessageDialog(null, "Check your input.\n"
+					+ "Error Message: Regular expressions not match("+rematch+")");
+		int players = Integer.parseInt(playerstr);
+		if (players>maxplayer)
+			JOptionPane.showMessageDialog(null, "Check your input.\n"
+					+ "Error Message: Input more than"+maxplayer);
+		return players;
+	}
 }
