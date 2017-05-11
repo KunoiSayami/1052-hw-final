@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import java.awt.Container;
 import java.util.*;
 
 class _cardStore{
@@ -62,7 +61,7 @@ public class Game extends JFrame{
 			JOptionPane.showMessageDialog(null, "Check your input.\n"
 					+ "Error Message: Regular expressions not match("+rematch+")");
 		int players = Integer.parseInt(playerstr);
-		if (players>maxplayer)
+		if (players >= maxplayer)
 			JOptionPane.showMessageDialog(null, "Check your input.\n"
 					+ "Error Message: Input more than"+maxplayer);
 		return players;
