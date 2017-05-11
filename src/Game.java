@@ -6,12 +6,13 @@
  */
 
 import java.util.Random;
+import java.util.*;
 
-class cardstore{
+class _cardStore{
 	static int card[],step,player;
 	static Random rand;
 	//Remove Ghost because 21 point no need
-	public void initCard(){
+	private void initCard(){
 		step = 0;
 		boolean tmpsz[] = new boolean[52];
 		for (int i=0,tmp;i<52;i++){
@@ -20,7 +21,7 @@ class cardstore{
 			tmpsz[tmp] = true;
 		}
 	}
-	public cardstore(int players){
+	public _cardStore(int players){
 		card = new int[52];
 		rand = new Random();
 		player = players;
@@ -31,8 +32,13 @@ class cardstore{
 			this.initCard();
 		return ((card[step++]+1)%13)>10?10:card[step-1];
 	}
+	public void Debug_showCardSz(){
+		Arrays.sort(card);
+		for (int i=0;i<52;i++)
+			System.out.printf("%d ",card[i]);
+	}
 }
 
 public class Game {
-	
+	_cardStore cardStore;
 }
