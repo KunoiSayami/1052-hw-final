@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import java.util.*;
 
 class _cardStore{
-	static int card[],step,player;
+	static int card[] = null,step,player;
 	static Random rand;
 	//Remove Ghost because 21 point no need
 	private void initCard(){
@@ -28,13 +28,16 @@ class _cardStore{
 		}
 	}
 	public _cardStore(int players){
+		// https://goo.gl/XVQGpD
+		if (card != null)
+			return ;
 		card = new int[52];
 		rand = new Random();
 		player = players;
 		this.initCard();
 	}
 	public int getNextPoint(){
-		if (step+player*2>52)
+		if (step+player*3+4>52)
 			this.initCard();
 		return ((card[step++]+1)%13)>10?10:card[step-1];
 	}
@@ -57,13 +60,17 @@ public class Game extends JFrame{
 		String rematch = "^[1-9]$";
 		Pattern r = Pattern.compile(rematch);
 		Matcher m = r.matcher(playerstr);
-		if (!m.find())
+		if (!m.find()){
 			JOptionPane.showMessageDialog(null, "Check your input.\n"
-					+ "Error Message: Regular expressions not match("+rematch+")");
+					+ "Error Message: Regular expressions not match(\""+rematch+"\")");
+			System.exit(1);
+		}
 		int players = Integer.parseInt(playerstr);
-		if (players >= maxplayer)
+		if (players >= maxplayer){
 			JOptionPane.showMessageDialog(null, "Check your input.\n"
-					+ "Error Message: Input more than"+maxplayer);
+					+ "Error Message: Input more than "+maxplayer);
+			System.exit(2);
+		}
 		return players;
 	}
 }
