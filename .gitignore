@@ -60,3 +60,10 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+# Visual Studio Code ignore
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
