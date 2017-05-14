@@ -50,12 +50,21 @@ class _cardStore{
 
 public class Game extends JFrame{
 	_cardStore cardStore;
-	static int maxplayer = 4;
+	static final int maxplayer = 4;
 	Game(){
 		super("21 point");
 		cardStore = new _cardStore(this.playerchoose());
 	}
 	private int playerchoose(){
+		String[] options={"Solo player","Multiplayer","Exit"};
+		int opt=JOptionPane.showOptionDialog(null,"Please choose Types of Game","21 point",JOptionPane.DEFAULT_OPTION,
+	  										JOptionPane.INFORMATION_MESSAGE,null,
+											options,"Solo player");
+		JOptionPane.showMessageDialog(null, ""+opt);
+		System.exit(0);
+		return this.playerchooseEx();
+	}
+	private int playerchooseEx(){
 		String playerstr = JOptionPane.showInputDialog("Please input player count");
 		String rematch = "^[1-9]$";
 		Pattern r = Pattern.compile(rematch);

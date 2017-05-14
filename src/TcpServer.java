@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketServer {
+public class TcpServer {
 	public static final int LISTEN_PORT = 9487;
 	public void listenRequest(){
 		ServerSocket serverSocket = null;
@@ -42,7 +42,7 @@ public class SocketServer {
 		}
 	}
 	public static void main(String[] args) {
-		SocketServer server = new SocketServer();
+		TcpServer server = new TcpServer();
 		server.listenRequest();
 	}
 	class RequestThread implements Runnable{

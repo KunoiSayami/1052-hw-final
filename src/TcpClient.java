@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 
-public class SocketClient {
+public class TcpClient {
 	public static void main(String[] args) throws IOException{
 		String host = "";
 		int port = 9487;
