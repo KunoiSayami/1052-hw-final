@@ -76,10 +76,12 @@ public class Game extends JFrame{
 												optionsServerType,
 												optionsServerType[0]
 												);
+		if (result == -1) System.exit(0);
 		if (result == 1)
 			this.searchServer();
 		else
 			this.createServer();
+		return ;
 	}
 	int playerchoose(){
 		String[] options={"Solo player","Multiplayer","Exit"};
