@@ -14,8 +14,10 @@ public class Network {
 }
 
 class UdpServer extends UdpServerEx{
-	UdpServer(){
+	boolean isClientMode;
+	UdpServer(boolean _isClientMode){
 		super("0.0.0.0");
+		this.isClientMode = _isClientMode;
 	}
 	@Override
 	public void run() throws Exception{
