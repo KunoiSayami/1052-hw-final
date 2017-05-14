@@ -54,7 +54,7 @@ public class Game extends JFrame{
 	int playerCount;
 	Game(){
 		super("21 point");
-		this.playerCount = this.playerchoose();
+		this.playerCount = this.gametypechoose();
 		cardStore = new _cardStore(playerCount);
 		if (this.playerCount > 1)
 			this.chooseServerType();
@@ -83,7 +83,7 @@ public class Game extends JFrame{
 			this.createServer();
 		return ;
 	}
-	int playerchoose(){
+	int gametypechoose(){
 		String[] options={"Solo player","Multiplayer","Exit"};
 		int result = JOptionPane.showOptionDialog(null,"Please choose Types of Game","21 point",JOptionPane.DEFAULT_OPTION,
 	  										JOptionPane.INFORMATION_MESSAGE,null,
