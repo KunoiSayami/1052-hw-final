@@ -54,21 +54,44 @@ public class Game extends JFrame{
 	int playerCount;
 	Game(){
 		super("21 point");
-		playerCount = this.playerchoose();
+		this.playerCount = this.playerchoose();
 		cardStore = new _cardStore(playerCount);
+		if (this.playerCount > 1)
+			this.chooseServerType();
+	}
+	void createServer(){
 
 	}
-	private int playerchoose(){
+	void searchServer(){
+
+	}
+	void chooseServerType(){
+		String[] optionsServerType = {"Create server","LAN server"};
+		int result = JOptionPane.showOptionDialog(null,
+												"Create or connect to other server",
+												"Server type",
+												JOptionPane.DEFAULT_OPTION,
+												JOptionPane.INFORMATION_MESSAGE,
+												null,
+												optionsServerType,
+												optionsServerType[0]
+												);
+		if (result == 1)
+			this.searchServer();
+		else
+			this.createServer();
+	}
+	int playerchoose(){
 		String[] options={"Solo player","Multiplayer","Exit"};
-		int opt=JOptionPane.showOptionDialog(null,"Please choose Types of Game","21 point",JOptionPane.DEFAULT_OPTION,
+		int result = JOptionPane.showOptionDialog(null,"Please choose Types of Game","21 point",JOptionPane.DEFAULT_OPTION,
 	  										JOptionPane.INFORMATION_MESSAGE,null,
 											options,"Solo player");
 		//JOptionPane.showMessageDialog(null, ""+opt);
-		if (opt == 2 || opt == -1)
+		if (result == 2 || result == -1)
 			System.exit(0);
-		return opt==0?2:this.playerchooseEx();
+		return result == 0? 1 : this.playerchooseEx();
 	}
-	private int playerchooseEx(){
+	int playerchooseEx(){
 		String playerstr = JOptionPane.showInputDialog("Please input player count");
 		String rematch = "^[2-9]$";
 		if (playerstr == null) System.exit(0);
