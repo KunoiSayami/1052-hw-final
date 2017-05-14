@@ -10,9 +10,11 @@ APPLIED PROGRAMMING Final Homework: 21 point
 
 ## Reference material
 
-JOptionPane: http://yhhuang1966.blogspot.tw/2014/05/java-swing_18.html
-Udp code: http://ccckmit.wikidot.com/jn:udp
-Tcp Code: http://enginebai.logdown.com/posts/208160/simple-java-socket-programming
+Code module | Website
+----------|---------
+JOptionPane | http://yhhuang1966.blogspot.tw/2014/05/java-swing_18.html
+Udp code | http://ccckmit.wikidot.com/jn:udp
+Tcp Code | http://enginebai.logdown.com/posts/208160/simple-java-socket-programming
 
 ## LICENSE
 
