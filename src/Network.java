@@ -28,7 +28,7 @@ class UdpServer extends UdpServerEx{
 	@SuppressWarnings("resource")
 	public void run() throws Exception{
 		byte buffer[] = new byte[buffSize];
-		DatagramSocket socket = new DatagramSocket(this.port, this.inetAddress);
+		DatagramSocket socket = new DatagramSocket(port, this.inetAddress);
 		while (this.check()){
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			socket.receive(packet);
@@ -37,24 +37,36 @@ class UdpServer extends UdpServerEx{
 			//return isClientMode?clientProcdata():serverProcdata();
 			
 			if (this.isClientMode)
-				clientProcdata(packet,packmsg);
+				if (clientProcdata(packet,packmsg))
+					break;
 			else
-				serverProcdata(packet,packmsg);
+				if (serverProcdata(packet,packmsg))
+					this.addressStore[this.index++] = packet.getAddress().getHostAddress();
 		}
 	}
 
 	boolean check(){
 		return this.isClientMode?true:this.index < this.addressStore.length;
 	}
-	void clientProcdata(DatagramPacket packet,String msg){
-		
+
+	boolean clientProcdata(DatagramPacket packet,String msg){
+		if (msg == "ACK"){
+			this.targetAddr = packet.getAddress().getHostAddress();
+			return true;
+		}
+		else return false;
 	}
 
-	void serverProcdata(DatagramPacket packet,String msg){
-
+	boolean serverProcdata(DatagramPacket packet,String msg) throws Exception{
+		UdpClient udpClient = null;
+		if (msg == "SYN"){
+			udpClient = new UdpClient(packet.getAddress().getHostAddress(),port,"ACK");
+			return true;
+		}
+		return false;
 	}
 	
-	String getTarget(){
+	String getTarget() throws RuntimeException{
 		RuntimeException runtimeException = new RuntimeException("targetAddr must be inited");
 		if (this.targetAddr == null)
 			throw runtimeException;
@@ -67,9 +79,6 @@ class UdpClient extends UdpClientEx{
 	String msg;
 	public UdpClient(String pServer, int pPort, String mMsg) throws Exception{
 		super(pServer,pPort);
-		this.msg = mMsg;
-	}
-	public void send(){
-		sendEx(this.msg);
+		this.send(mMsg);
 	}
 }

@@ -30,7 +30,7 @@ public class UdpClientEx {
 	//	msg = pMsg;                                 // 設定傳送訊息。
 	}
  
-	public void sendEx(String msg) {
+	public void send(String msg) {
 	  try {
 		byte buffer[] = msg.getBytes();                 // 將訊息字串 msg 轉換為位元串。
 		// 封裝該位元串成為封包 DatagramPacket，同時指定傳送對象。
