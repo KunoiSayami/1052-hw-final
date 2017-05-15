@@ -7,7 +7,6 @@
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.*;
 
 public class Network {
 	
@@ -35,13 +34,13 @@ class UdpServer extends UdpServerEx{
 			String packmsg = new String(buffer , 0, packet.getLength());
 			//System.out.printf("%s:%s\n",packet.getAddress(),packmsg);
 			//return isClientMode?clientProcdata():serverProcdata();
-			
 			if (this.isClientMode)
 				if (clientProcdata(packet,packmsg))
 					break;
 			else
-				if (serverProcdata(packet,packmsg))
+				if (serverProcdata(packet,packmsg)){
 					this.addressStore[this.index++] = packet.getAddress().getHostAddress();
+				}
 		}
 	}
 
@@ -57,6 +56,7 @@ class UdpServer extends UdpServerEx{
 		else return false;
 	}
 
+	@SuppressWarnings("unused")
 	boolean serverProcdata(DatagramPacket packet,String msg) throws Exception{
 		UdpClient udpClient = null;
 		if (msg == "SYN"){

@@ -5,7 +5,6 @@
  *
  */
 
-import java.io.*;
 import java.net.*;
  
 // 1. 本程式必須與 UdpClient.java 程式搭配執行，先執行本程式再執行 UdpClient。
@@ -16,7 +15,7 @@ public class UdpServerEx {
 	InetAddress inetAddress; 
 	static final int buffSize = 8192;
 	public static void main(String args[]) throws Exception {
-		UdpServerEx server = new UdpServerEx(args[1]); // 建立 UdpServer 伺服器物件。
+		UdpServerEx server = new UdpServerEx(args[0]); // 建立 UdpServer 伺服器物件。
 		server.run();                           // 執行該伺服器。
 	}
  
@@ -48,7 +47,7 @@ public class UdpServerEx {
 			socket.receive(packet);                                    // 接收封包。
 			String msg = new String(buffer, 0, packet.getLength());    // 將接收訊息轉換為字串。
 			//System.out.println(count+" : receive = "+msg);                    // 印出接收到的訊息。
-			System.out.printf("Connect from: %s\n",packet.getAddress());
+			System.out.printf("Connect from: %s\n",packet.getAddress().getHostAddress());
 			//socket.close();                                            // 關閉 UDP Socket.
 		}
 	}

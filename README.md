@@ -17,6 +17,8 @@ Udp code | http://ccckmit.wikidot.com/jn:udp
 Tcp Code | http://enginebai.logdown.com/posts/208160/simple-java-socket-programming
 DatagramSocket | http://blog.csdn.net/jiangxinyu/article/details/8161044 <br> https://bryceknowhow.blogspot.tw/2014/01/java-datagramsocketudp.html
 IP Address | http://www.pcnet.idv.tw/pcnet/network/network_ip_addr.htm
+Tcp | https://zh.wikipedia.org/zh-tw/%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE
+inetaddr2string | http://stackoverflow.com/questions/9340989/javainetaddress-to-string-conversion
 
 ## LICENSE
 

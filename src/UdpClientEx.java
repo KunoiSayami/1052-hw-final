@@ -22,6 +22,8 @@ public class UdpClientEx {
 		//	UdpClientEx client = new UdpClientEx(args[0], 5555, "UdpClient : "+i+"th message");
 		//	client.run(); // 啟動 UdpClient 開始傳送。
 		//}
+		UdpClientEx client = new UdpClientEx("localhost", 9487);
+		client.send("test");
 	}
  
 	public UdpClientEx(String pServer, int pPort) throws Exception {
