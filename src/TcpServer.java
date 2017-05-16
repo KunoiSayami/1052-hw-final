@@ -20,7 +20,7 @@ public class TcpServer extends NetworkFather{
 		ExecutorService threadExecuteor = Executors.newCachedThreadPool();
 		try{
 			serverSocket = new ServerSocket(serverPort);
-			System.out.println("Server listening requests...");
+			//System.out.println("Server listening requests...");
 			while (true){
 				Socket socket = serverSocket.accept();
 				threadExecuteor.execute(new RequestThread(socket));

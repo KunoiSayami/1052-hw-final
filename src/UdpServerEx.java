@@ -32,7 +32,7 @@ public class UdpServerEx extends NetworkFather{
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 					// 設定接收的 UDP Socket.
 			socket.receive(packet);                                    // 接收封包。
-			String msg = new String(buffer, 0, packet.getLength());    // 將接收訊息轉換為字串。
+			//String msg = new String(buffer, 0, packet.getLength());    // 將接收訊息轉換為字串。
 			//System.out.println(count+" : receive = "+msg);                    // 印出接收到的訊息。
 			System.out.printf("Connect from: %s\n",packet.getAddress().getHostAddress());
 			//socket.close();                                            // 關閉 UDP Socket.

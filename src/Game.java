@@ -52,6 +52,7 @@ public class Game extends JFrame{
 	_cardStore cardStore;
 	static final int maxplayer = 4;
 	int playerCount;
+	TcpServer tcpServer;
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
@@ -60,7 +61,7 @@ public class Game extends JFrame{
 			this.chooseServerType();
 	}
 	void createServer(){
-
+		tcpServer = new TcpServer();
 	}
 	void searchServer(){
 
