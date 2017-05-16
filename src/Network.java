@@ -17,8 +17,8 @@ class UdpServer extends UdpServerEx{
 	String[] addressStore;
 	int index;
 	String targetAddr;
-	UdpServer(boolean _isClientMode,int playerCount){
-		super("0.0.0.0");
+	UdpServer(boolean _isClientMode,int playerCount) throws Exception{
+		super();
 		this.isClientMode = _isClientMode;
 		this.addressStore = new String[playerCount];
 		index = 0;
@@ -27,7 +27,7 @@ class UdpServer extends UdpServerEx{
 	@SuppressWarnings("resource")
 	public void run() throws Exception{
 		byte buffer[] = new byte[buffSize];
-		DatagramSocket socket = new DatagramSocket(port, this.inetAddress);
+		DatagramSocket socket = new DatagramSocket(serverPort, this.inetAddress);
 		while (this.check()){
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			socket.receive(packet);
@@ -60,7 +60,7 @@ class UdpServer extends UdpServerEx{
 	boolean serverProcdata(DatagramPacket packet,String msg) throws Exception{
 		UdpClient udpClient = null;
 		if (msg == "SYN"){
-			udpClient = new UdpClient(packet.getAddress().getHostAddress(),port,"ACK");
+			udpClient = new UdpClient(packet.getAddress().getHostAddress(),serverPort,"ACK");
 			return true;
 		}
 		return false;
@@ -74,7 +74,7 @@ class UdpServer extends UdpServerEx{
 	}
 }
 
-
+//A new class that can send udp message immediately
 class UdpClient extends UdpClientEx{
 	String msg;
 	public UdpClient(String pServer, int pPort, String mMsg) throws Exception{
@@ -82,3 +82,4 @@ class UdpClient extends UdpClientEx{
 		this.send(mMsg);
 	}
 }
+

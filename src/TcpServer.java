@@ -13,13 +13,13 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TcpServer {
-	public static final int LISTEN_PORT = 9487;
+public class TcpServer extends NetworkFather{
+	//public static final int LISTEN_PORT = 9487;
 	public void listenRequest(){
 		ServerSocket serverSocket = null;
 		ExecutorService threadExecuteor = Executors.newCachedThreadPool();
 		try{
-			serverSocket = new ServerSocket(LISTEN_PORT);
+			serverSocket = new ServerSocket(serverPort);
 			System.out.println("Server listening requests...");
 			while (true){
 				Socket socket = serverSocket.accept();
