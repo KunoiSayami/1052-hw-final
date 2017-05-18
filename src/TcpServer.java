@@ -23,7 +23,7 @@ public class TcpServer extends NetworkFather{
 			//System.out.println("Server listening requests...");
 			while (true){
 				Socket socket = serverSocket.accept();
-				threadExecuteor.execute(new RequestThread(socket));
+				threadExecuteor.execute(new RequestThreadEx(socket));
 			}
 		}
 		catch (IOException e){
@@ -45,9 +45,9 @@ public class TcpServer extends NetworkFather{
 		TcpServer server = new TcpServer();
 		server.listenRequest();
 	}
-	class RequestThread implements Runnable{
+	class RequestThreadEx implements Runnable{
 		private Socket clientSocket;
-		public RequestThread(Socket clientSocket){
+		public RequestThreadEx(Socket clientSocket){
 			this.clientSocket = clientSocket;
 		}
 		@Override

@@ -53,6 +53,7 @@ public class Game extends JFrame{
 	static final int maxplayer = 4;
 	int playerCount;
 	TcpServer tcpServer;
+	TcpClient tcpClient;
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
