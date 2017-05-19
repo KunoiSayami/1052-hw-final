@@ -34,12 +34,31 @@ class MainServer extends TcpServer{
 	
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
-		public RequestThread(Socket clientSocket){
-			this.clientSocket = clientSocket;
+		private String [] clientOnlineStrings;
+		private int clientID;
+		public RequestThread(Socket _clientSocket , String [] _clientOnlineStrings)
+			throws IndexOutOfBoundsException {
+			this.clientID = 0;
+			this.clientSocket = _clientSocket;
+			this.clientOnlineStrings = _clientOnlineStrings;
+			this.checkAvaliable();
 		}
+		void checkAvaliable() throws IndexOutOfBoundsException{
+			for (int i = 0 ; i < this.clientOnlineStrings.length; i++)
+				if (this.clientSocket.getInetAddress().getHostAddress() == this.clientOnlineStrings[i]){
+					this.clientID = i;
+					break;
+				}
+			if (this.clientID == 0){
+				IndexOutOfBoundsException indexOutOfBoundsException =
+					new IndexOutOfBoundsException();
+				throw indexOutOfBoundsException;
+			}
+		}
+
 		@Override
 		public void run(){
-			
+
 		}
 	}
 }
