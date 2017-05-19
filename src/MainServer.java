@@ -11,15 +11,16 @@ import java.net.Socket;
 class MainServer extends TcpServer{
 	int playerCount;
 	int onlinePlayer;
-	String[] clientAddresStrings;
+	String[] clientAddressStrings;
+	String[] onlineAddressStrings;
 	MainServer(int _playerCount){
 		this.playerCount = _playerCount;
-		this.clientAddresStrings = new String[playerCount];
+		this.clientAddressStrings = new String[playerCount];
 	}
 	public void insertClient(String clientAddress){
 		for (int i = 0;i < this.playerCount ; i++)
-			if (this.clientAddresStrings[i] == null){
-				this.clientAddresStrings[i] = clientAddress;
+			if (this.clientAddressStrings[i] == null){
+				this.clientAddressStrings[i] = clientAddress;
 				return ;
 			}
 		IndexOutOfBoundsException indexOutOfBoundsException = 
@@ -33,7 +34,6 @@ class MainServer extends TcpServer{
 	
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
-		String[] onlinePlayerStrings;
 		public RequestThread(Socket clientSocket){
 			this.clientSocket = clientSocket;
 		}
