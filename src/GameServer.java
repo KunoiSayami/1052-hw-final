@@ -21,11 +21,13 @@ class GameServer extends NetworkFather{
 	String[] onlineAddressStrings;
 	ReentrantLock threadLock;
 	String[] syncStrings;
+	CardStore[] cardStores;
 	GameServer(int _playerCount){
 		this.playerCount = _playerCount;
-		this.clientAddressStrings = new String[playerCount];
+		this.clientAddressStrings = new String[this.playerCount];
 		this.threadLock = new ReentrantLock();
-		this.syncStrings = new String[playerCount];
+		this.syncStrings = new String[this.playerCount];
+		this.cardStores = new CardStore[this.playerCount]
 	}
 	public void listenRequest(){
 		ServerSocket serverSocket = null;
@@ -69,6 +71,10 @@ class GameServer extends NetworkFather{
 			this.insertClient(i);
 	}
 	
+	public void createServer(){
+		
+	}
+
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
 		private String [] clientOnlineStrings;
@@ -121,6 +127,22 @@ class GameServer extends NetworkFather{
 				}
 			}
 		}
+	}
+}
+
+
+class CardStore{
+	int point;
+	CardStore(){
+		this.point = 0;
+	}
+	public boolean addPoint(int _point){
+		this.point+= _point;
+		return this.point>17?true:false;
+	}
+	public void clearPoint(){
+		this.point = 0;
+		return ;
 	}
 }
 
