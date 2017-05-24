@@ -5,51 +5,13 @@
  *
  */
 
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import java.util.*;
-
-class _cardStore{
-	static int card[] = null,step,player;
-	static Random rand;
-	//Remove Ghost because 21 point no need
-	private void initCard(){
-		step = 0;
-		boolean tmpsz[] = new boolean[52];
-		for (int i=0,tmp;i<52;i++){
-			while (tmpsz[tmp = rand.nextInt(52)]);
-			card[i] = tmp;
-			tmpsz[tmp] = true;
-		}
-	}
-	public _cardStore(int players){
-		// https://goo.gl/XVQGpD
-		if (card != null)
-			return ;
-		card = new int[52];
-		rand = new Random();
-		player = players;
-		this.initCard();
-	}
-	public int getNextPoint(){
-		if (step+player*3+4>52)
-			this.initCard();
-		return ((card[step++]+1)%13)>10?10:card[step-1];
-	}
-	public void Debug_showCardSz(){
-		Arrays.sort(card);
-		for (int i=0;i<52;i++)
-			System.out.printf("%d ",card[i]);
-	}
-}
-
 public class Game extends JFrame{
-	_cardStore cardStore;
 	static final int maxplayer = 4;
 	int playerCount;
 	TcpClient tcpClient;
@@ -58,7 +20,6 @@ public class Game extends JFrame{
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
-		cardStore = new _cardStore(playerCount);
 		if (this.playerCount > 1)
 			this.chooseServerType();
 		gameServer = null;
