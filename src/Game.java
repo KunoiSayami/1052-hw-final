@@ -53,15 +53,24 @@ public class Game extends JFrame{
 	static final int maxplayer = 4;
 	int playerCount;
 	TcpClient tcpClient;
+	GameServer gameServer;
+	Thread gameServerThread;
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
 		cardStore = new _cardStore(playerCount);
 		if (this.playerCount > 1)
 			this.chooseServerType();
+		gameServer = null;
+		gameServerThread = null;
 	}
 	void createServer(){
-
+		Runnable gameServerDaemon = () ->{
+			this.gameServer = new GameServer(this.playerCount);
+		};
+		this.gameServerThread = new Thread(gameServerDaemon);
+		gameServerThread.start();
+		return ;
 	}
 	void searchServer(){
 
