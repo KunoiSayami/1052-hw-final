@@ -101,9 +101,10 @@ class GameServer extends NetworkFather{
 		}
 		void checkAvaliable() throws IndexOutOfBoundsException{
 			for (int i = 0 ; i < this.onlineUser.getOnlineUserStrings().length; i++)
-				if (this.clientSocket.getInetAddress().getHostAddress() == this.onlineUser.getOnlineUserStrings()[i]){
-					this.clientID = i;
-					break;
+				if (this.clientSocket.getInetAddress().getHostAddress() == 
+					this.onlineUser.getOnlineUserStrings()[i]){
+						this.clientID = i;
+						break;
 				}
 			if (this.clientID == 0){
 				IndexOutOfBoundsException indexOutOfBoundsException =
@@ -119,8 +120,11 @@ class GameServer extends NetworkFather{
 			try {
 				dataInputStream = new DataInputStream(this.clientSocket.getInputStream());
 				dataOutputStream = new DataOutputStream(this.clientSocket.getOutputStream());
-				while (true){
-					this.threadLock.lock();
+				if (dataInputStream.readUTF() == "SYN"){
+					dataOutputStream.writeUTF("ACK");
+					while (true){
+						this.threadLock.lock();
+					}
 				}
 			}
 			catch (IOException e){

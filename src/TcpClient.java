@@ -13,37 +13,35 @@ import java.util.Scanner;
 
 
 public class TcpClient extends NetworkFather {
-	public static void main(String[] args) throws IOException{
-		String host = "";
-		int port = 9487;
-		Socket socket = null;
-		Scanner consoleInput = new Scanner(System.in);
-		host  = consoleInput.nextLine();
-		try{
-			socket = new Socket(host, port);
-			DataInputStream input = null;
-			DataOutputStream output = null;
-			
-			try{
-				input = new DataInputStream(socket.getInputStream());
-				output = new DataOutputStream(socket.getOutputStream());
-				while (true){
-					System.out.println(input.readUTF());
-					break;
-				}
-			}
-			catch (IOException e){}
-			finally {
-				if (input != null) input.close();
-				if (output != null) output.close();
-			}
-		}
-		catch (IOException e){
+	Socket socket;
+	DataInputStream dataInputStream;
+	DataOutputStream dataOutputStream;
+	TcpClient(String remoteAddress){
+		try {
+			this.socket = new Socket(remoteAddress,serverPort);
+			this.dataInputStream = new DataInputStream(socket.getInputStream());
+			this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+			this.authFunc();
+		} catch (Exception e){
 			e.printStackTrace();
 		}
-		finally {
-			if (socket != null) socket.close();
-			if (consoleInput != null) consoleInput.close();
-		}
+	}
+	private void authFunc() throws IOException{
+		this.write("ACK");
+	}
+	public String read() throws IOException{
+		return this.dataInputStream.readUTF();
+	}
+	public void write(String str) throws IOException{
+		this.dataOutputStream.writeUTF(str);
+		return ;
+	}
+	public void close() throws IOException{
+		if (dataInputStream != null)
+			dataInputStream.close();
+		if (dataOutputStream != null)
+			dataOutputStream.close();
+		if (socket != null)
+			socket.close();
 	}
 }
