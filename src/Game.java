@@ -18,6 +18,7 @@ public class Game extends JFrame{
 	TcpClient tcpClient;
 	GameServer gameServer;
 	Thread gameServerThread;
+	String targetServerAddress;
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
@@ -43,6 +44,8 @@ public class Game extends JFrame{
 		try {
 			UdpServer udpServer = new UdpServer(true, playerCount);
 			new UdpClient("255.255.255.255", 9487, "ACK");
+			Thread.sleep(5000);
+			this.targetServerAddress = udpServer.getTarget();
 		} catch (Exception e){
 			e.printStackTrace();
 		}
