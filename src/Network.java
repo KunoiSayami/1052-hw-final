@@ -20,7 +20,8 @@ class UdpServer extends UdpServerEx{
 	UdpServer(boolean _isClientMode,int playerCount) throws Exception{
 		super();
 		this.isClientMode = _isClientMode;
-		this.addressStore = new String[playerCount];
+		if (!isClientMode)
+			this.addressStore = new String[playerCount];
 		index = 0;
 	}
 

@@ -23,7 +23,8 @@ class GameServer extends NetworkFather{
 	int playerCount;
 	String[] clientAddressStrings;
 	ReentrantLock threadLock;
-	String[] syncStrings;
+	//String[] syncStrings;
+	SocketSendMsg[] socketSendMsg;
 	Hand[] hand;
 	static OnlineUser onlineUser;
 	static CardStore cardStore = null;
@@ -31,7 +32,8 @@ class GameServer extends NetworkFather{
 		this.playerCount = _playerCount;
 		this.clientAddressStrings = new String[this.playerCount];
 		this.threadLock = new ReentrantLock();
-		this.syncStrings = new String[this.playerCount];
+		//this.syncStrings = new String[this.playerCount];
+		this.socketSendMsg = new SocketSendMsg[this.playerCount];
 		this.hand = new Hand[this.playerCount];
 		if (cardStore == null)
 			cardStore = new CardStore(this.playerCount);
@@ -43,8 +45,19 @@ class GameServer extends NetworkFather{
 			serverSocket = new ServerSocket(serverPort);
 			while (true){
 				Socket socket = serverSocket.accept();
+				int clientID;
+				for (clientID = -1;clientID<this.playerCount &&
+					clientAddressStrings[++clientID]!=socket.getInetAddress().getHostAddress(););
+				if (clientID == this.playerCount)
+					continue;
+				onlineUser.write(socket);
+				/*{
+					IndexOutOfBoundsException indexOutOfBoundsException = 
+						new IndexOutOfBoundsException();
+					throw indexOutOfBoundsException;
+				}*/
 				threadExecuteor.execute(new RequestThread(
-					socket,onlineUser,this.threadLock
+					socket,socketSendMsg[clientID]
 					));
 			}
 		}
@@ -63,6 +76,7 @@ class GameServer extends NetworkFather{
 				}
 		}
 	}
+
 	public void insertClient(String clientAddress){
 		for (int i = 0;i < this.playerCount ; i++)
 			if (this.clientAddressStrings[i] == null){
@@ -84,33 +98,23 @@ class GameServer extends NetworkFather{
 
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
-		//private String [] clientOnlineStrings;
-		private OnlineUser onlineUser;
-		private int clientID;
-		ReentrantLock threadLock;
-		public RequestThread(Socket _clientSocket,
-			OnlineUser _onlineUser,
-			ReentrantLock _threadLock)
+		//private OnlineUser onlineUser;
+		//private int clientID;
+		SocketSendMsg socketSendMsg;
+		//ReentrantLock threadLock;
+		public RequestThread(
+			//int _clientID,
+			Socket _clientSocket,
+			//OnlineUser _onlineUser,
+			//ReentrantLock _threadLock
+			SocketSendMsg _socketSendMsg
+			)
 			throws IndexOutOfBoundsException {
-				this.clientID = 0;
+				//this.clientID = _clientID;
 				this.clientSocket = _clientSocket;
-				//this.clientOnlineStrings = _clientOnlineStrings;
-				this.onlineUser = _onlineUser;
-				this.threadLock = _threadLock;
-				this.checkAvaliable();
-		}
-		void checkAvaliable() throws IndexOutOfBoundsException{
-			for (int i = 0 ; i < this.onlineUser.getOnlineUserStrings().length; i++)
-				if (this.clientSocket.getInetAddress().getHostAddress() == 
-					this.onlineUser.getOnlineUserStrings()[i]){
-						this.clientID = i;
-						break;
-				}
-			if (this.clientID == 0){
-				IndexOutOfBoundsException indexOutOfBoundsException =
-					new IndexOutOfBoundsException();
-				throw indexOutOfBoundsException;
-			}
+				//this.onlineUser = _onlineUser;
+				//this.threadLock = _threadLock;
+				this.socketSendMsg = _socketSendMsg;
 		}
 
 		@Override
@@ -123,7 +127,8 @@ class GameServer extends NetworkFather{
 				if (dataInputStream.readUTF() == "SYN"){
 					dataOutputStream.writeUTF("ACK");
 					while (true){
-						this.threadLock.lock();
+						//this.threadLock.lock();
+						
 					}
 				}
 			}
@@ -160,7 +165,6 @@ class Hand{
 		return ;
 	}
 }
-
 
 
 class CardStore{
@@ -228,4 +232,26 @@ class OnlineUser{
 		return onlineUserStrings;
 	}
 
+}
+
+class SocketSendMsg{
+	String msg;
+	boolean needSend;
+	SocketSendMsg(){
+		this.msg = "";
+		this.needSend = false;
+	}
+	void reset(){
+		this.msg = "";
+		this.needSend = false;
+	}
+	public void setMsg(String _msg){
+		this.msg = _msg;
+		this.needSend = true;
+	}
+	public String getMsg(){
+		String tmpMsg = this.msg;
+		this.reset();
+		return tmpMsg;
+	}
 }

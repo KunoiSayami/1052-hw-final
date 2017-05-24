@@ -5,6 +5,7 @@
  *
  */
 
+import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,10 +32,20 @@ public class Game extends JFrame{
 		};
 		this.gameServerThread = new Thread(gameServerDaemon);
 		gameServerThread.start();
+		try {
+			tcpClient = new TcpClient(InetAddress.getLocalHost().getHostAddress());
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		return ;
 	}
 	void searchServer(){
-
+		try {
+			UdpServer udpServer = new UdpServer(true, playerCount);
+			new UdpClient("255.255.255.255", 9487, "ACK");
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 	void chooseServerType(){
 		String[] optionsServerType = {"Create server","LAN server"};
