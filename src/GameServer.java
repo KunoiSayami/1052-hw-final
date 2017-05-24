@@ -27,7 +27,7 @@ class GameServer extends NetworkFather{
 		this.clientAddressStrings = new String[this.playerCount];
 		this.threadLock = new ReentrantLock();
 		this.syncStrings = new String[this.playerCount];
-		this.cardStores = new CardStore[this.playerCount]
+		this.cardStores = new CardStore[this.playerCount];
 	}
 	public void listenRequest(){
 		ServerSocket serverSocket = null;
