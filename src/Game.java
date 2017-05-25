@@ -44,9 +44,18 @@ public class Game extends JFrame{
 		try {
 			UdpServer udpServer = new UdpServer(true, playerCount);
 			new UdpClient("255.255.255.255", 9487, "ACK");
+			//Sleep 5 seconds to wait server response
 			Thread.sleep(5000);
 			this.targetServerAddress = udpServer.getTarget();
-		} catch (Exception e){
+		} 
+		catch (RuntimeException e){
+			JOptionPane.showMessageDialog(null, "Cannot find server!\nProgram will now exit.",
+				"Client Error",JOptionPane.ERROR_MESSAGE);
+			//e.printStackTrace();
+			//abort();
+			System.exit(5);
+		}
+		catch (Exception e){
 			e.printStackTrace();
 		}
 	}
