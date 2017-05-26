@@ -28,8 +28,6 @@ public class UdpServer extends UdpServerEx{
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 			socket.receive(packet);
 			String packmsg = new String(buffer , 0, packet.getLength());
-			//System.out.printf("%s:%s\n",packet.getAddress(),packmsg);
-			//return isClientMode?clientProcdata():serverProcdata();
 			if (this.isClientMode)
 				if (clientProcdata(packet,packmsg))
 					break;

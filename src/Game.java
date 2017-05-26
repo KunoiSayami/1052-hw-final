@@ -48,7 +48,7 @@ public class Game extends JFrame{
 			Thread.sleep(5000);
 			this.targetServerAddress = udpServer.getTarget();
 			tcpClient = new TcpClient(this.targetServerAddress);
-		} 
+		}
 		catch (RuntimeException e){
 			JOptionPane.showMessageDialog(null, "Cannot find server!\nProgram will now exit.",
 				"Client Error",JOptionPane.ERROR_MESSAGE);

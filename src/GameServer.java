@@ -56,7 +56,7 @@ class GameServer extends NetworkFather{
 					throw indexOutOfBoundsException;
 				}*/
 				threadExecuteor.execute(new RequestThread(
-					socket,socketSendMsg[clientID]
+					socket,socketSendMsg[clientID],socketReceiveMsg[clientID]
 					));
 			}
 		}
@@ -112,46 +112,61 @@ class GameServer extends NetworkFather{
 
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
-		FlagedString socketSendMsg;
+		FlagedString socketSendMsg,socketReceiveMsg;
+		DataInputStream dataInputStream = null;
+		DataOutputStream dataOutputStream = null;
 		public RequestThread(
 			Socket _clientSocket,
-			FlagedString _socketSendMsg
+			FlagedString _socketSendMsg,FlagedString _socketReceiveMsg
 			)
 			throws IndexOutOfBoundsException {
 				this.clientSocket = _clientSocket;
 				this.socketSendMsg = _socketSendMsg;
+				this.socketReceiveMsg = _socketReceiveMsg;
 		}
 
 		@Override
 		public void run(){
-			DataInputStream dataInputStream = null;
-			DataOutputStream dataOutputStream = null;
 			try {
-				dataInputStream = new DataInputStream(this.clientSocket.getInputStream());
-				dataOutputStream = new DataOutputStream(this.clientSocket.getOutputStream());
-				if (dataInputStream.readUTF() == "SYN"){
-					dataOutputStream.writeUTF("ACK");
+				this.dataInputStream = new DataInputStream(this.clientSocket.getInputStream());
+				this.dataOutputStream = new DataOutputStream(this.clientSocket.getOutputStream());
+				/** 
+				 * DataInputStream.readUTF will block our code. So, I create a new thread to
+				 * process read action.
+				 * REFERENCE : https://coderanch.com/t/278776/java/readInt-DataInputStream-class-block
+				 */
+				Runnable runnable = () -> {
+					try {
+						this.socketReceiveMsg.setMsg(this.dataInputStream.readUTF());
+					} catch (Exception e){}
+				};
+				Thread thread = new Thread(runnable);
+				thread.start();
+				if (this.dataInputStream.readUTF() == "SYN"){
+					this.dataOutputStream.writeUTF("ACK");
 					while (true){
 						while (!socketSendMsg.getFlag())
 							try{Thread.sleep(1000);} catch (InterruptedException e){}
-						
+						this.dataOutputStream.writeUTF(socketSendMsg.getMsg());
 					}
 				}
 			}
 			catch (IOException e){
 				e.printStackTrace();
 			}
-			finally{
-				try{
-					if (dataInputStream != null) dataInputStream.close();
-					if (dataOutputStream != null) dataOutputStream.close();
-					if (this.clientSocket != null && !this.clientSocket.isClosed())
-						this.clientSocket.close();
-				}
-				catch (IOException e){
-					e.printStackTrace();
-				}
+		}
+		public void close(){
+			try {
+				if (this.clientSocket != null)
+					this.clientSocket.close();
+				if (this.dataInputStream != null)
+					this.dataInputStream.close();
+				if (this.dataOutputStream != null)
+					this.dataOutputStream.close();
+			} catch (IOException e){
+				// RESERVE FOR FEATURE
 			}
+			
 		}
 	}
 }
