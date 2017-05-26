@@ -23,8 +23,7 @@ class GameServer extends NetworkFather{
 	int playerCount;
 	String[] clientAddressStrings;
 	ReentrantLock threadLock;
-	//String[] syncStrings;
-	SocketSendMsg[] socketSendMsg;
+	FlagedString[] socketSendMsg,socketReceiveMsg;
 	Hand[] hand;
 	static OnlineUser onlineUser;
 	static CardStore cardStore = null;
@@ -32,8 +31,8 @@ class GameServer extends NetworkFather{
 		this.playerCount = _playerCount;
 		this.clientAddressStrings = new String[this.playerCount];
 		this.threadLock = new ReentrantLock();
-		//this.syncStrings = new String[this.playerCount];
-		this.socketSendMsg = new SocketSendMsg[this.playerCount];
+		this.socketSendMsg = new FlagedString[this.playerCount];
+		this.socketReceiveMsg = new FlagedString[this.playerCount];
 		this.hand = new Hand[this.playerCount];
 		if (cardStore == null)
 			cardStore = new CardStore(this.playerCount);
@@ -46,7 +45,7 @@ class GameServer extends NetworkFather{
 			while (true){
 				Socket socket = serverSocket.accept();
 				int clientID;
-				for (clientID = -1;clientID<this.playerCount &&
+				for (clientID = -1; clientID < this.playerCount &&
 					clientAddressStrings[++clientID]!=socket.getInetAddress().getHostAddress(););
 				if (clientID == this.playerCount)
 					continue;
@@ -93,7 +92,7 @@ class GameServer extends NetworkFather{
 	}
 	
 	String __getMsgString__(Hand h){
-		String str = String.format("%d\\n%d\\n", h.getPoint(),h.getEachPointVector().size());
+		String str = String.format("HAND\\n\\n%d\\n%d\\n", h.getPoint(),h.getEachPointVector().size());
 		for (Integer x:h.getEachPointVector())
 			str += String.format("%d\\n", x);
 		return str;
@@ -113,22 +112,13 @@ class GameServer extends NetworkFather{
 
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
-		//private OnlineUser onlineUser;
-		//private int clientID;
-		SocketSendMsg socketSendMsg;
-		//ReentrantLock threadLock;
+		FlagedString socketSendMsg;
 		public RequestThread(
-			//int _clientID,
 			Socket _clientSocket,
-			//OnlineUser _onlineUser,
-			//ReentrantLock _threadLock
-			SocketSendMsg _socketSendMsg
+			FlagedString _socketSendMsg
 			)
 			throws IndexOutOfBoundsException {
-				//this.clientID = _clientID;
 				this.clientSocket = _clientSocket;
-				//this.onlineUser = _onlineUser;
-				//this.threadLock = _threadLock;
 				this.socketSendMsg = _socketSendMsg;
 		}
 
@@ -142,7 +132,8 @@ class GameServer extends NetworkFather{
 				if (dataInputStream.readUTF() == "SYN"){
 					dataOutputStream.writeUTF("ACK");
 					while (true){
-						//this.threadLock.lock();
+						while (!socketSendMsg.getFlag())
+							try{Thread.sleep(1000);} catch (InterruptedException e){}
 						
 					}
 				}
@@ -259,10 +250,10 @@ class OnlineUser{
 
 }
 
-class SocketSendMsg{
+class FlagedString{
 	String msg;
 	boolean needSend;
-	SocketSendMsg(){
+	FlagedString(){
 		this.msg = "";
 		this.needSend = false;
 	}
@@ -273,6 +264,9 @@ class SocketSendMsg{
 	public void setMsg(String _msg){
 		this.msg = _msg;
 		this.needSend = true;
+	}
+	public boolean getFlag(){
+		return needSend;
 	}
 	public String getMsg(){
 		String tmpMsg = this.msg;
