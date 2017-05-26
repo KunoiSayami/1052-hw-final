@@ -107,4 +107,19 @@ public class Game extends JFrame{
 		}
 		return players;
 	}
+	static String authorString = "Copyright (C) 2017 Too-Naive\nAll rights reserved.";
+	static void aboutMe(){
+			// TODO : RESERVED BY FEATURE
+			/*try{
+					File f = new File("authorSay.txt");
+					Scanner input = new Scanner(f);
+					String str = "";
+					while (input.hasNext())
+							 str += input.next();
+					input.close();
+			} catch (Exception e){}*/
+			String me = authorString + AboutMe.rawAboutMe;
+			JOptionPane.showMessageDialog(null, me);
+		}
+	}
 }
