@@ -14,7 +14,7 @@ import java.net.Socket;
 
 import java.util.Arrays;
 import java.util.Random;
-
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
@@ -92,8 +92,23 @@ class GameServer extends NetworkFather{
 			this.insertClient(i);
 	}
 	
+	String __getMsgString__(Hand h){
+		String str = String.format("%d\\n%d\\n", h.getPoint(),h.getEachPointVector().size());
+		for (Integer x:h.getEachPointVector())
+			str += String.format("%d\\n", x);
+		return str;
+	}
+
 	public void createServer(){
-		
+		while (true){
+			for (int i = 0;i < this.playerCount; i++ ){
+				while (hand[i].addPoint(cardStore.getNextPoint()));
+				this.socketSendMsg[i].setMsg(this.__getMsgString__(hand[i]));
+			}
+			/*for (Hand h:hand){
+				while(h.addPoint(cardStore.getNextPoint()));
+			}*/
+		}
 	}
 
 	class RequestThread implements Runnable{
@@ -153,16 +168,26 @@ class GameServer extends NetworkFather{
 
 class Hand{
 	int point;
+	Vector<Integer> eachPoint;
 	Hand(){
+		eachPoint = new Vector<Integer>();
 		this.point = 0;
 	}
 	public boolean addPoint(int _point){
 		this.point+= _point;
+		eachPoint.add(new Integer(_point));
 		return this.point>17?true:false;
 	}
 	public void clearPoint(){
 		this.point = 0;
+		eachPoint.clear();
 		return ;
+	}
+	public Vector<Integer> getEachPointVector(){
+		return this.eachPoint;
+	}
+	public int getPoint(){
+		return this.point;
 	}
 }
 

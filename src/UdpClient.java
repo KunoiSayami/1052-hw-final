@@ -6,9 +6,6 @@
  */
 
 import java.net.*;
- 
-
-
 
 //A new class that can send udp message immediately
 public class UdpClient extends UdpClientEx{
@@ -20,11 +17,9 @@ public class UdpClient extends UdpClientEx{
 }
 
 
-
 // 1. 本程式必須與 UdpServer.java 程式搭配執行，先執行 UdpServer 再執行本程式。
 // 2. 本程式必須有一個參數，指定伺服器的 IP。
 // 用法範例： java UdpClient 127.0.0.1
- 
 
 class UdpClientEx extends NetworkFather {
 	//int port;            // port : 連接埠
