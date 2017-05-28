@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,30 +23,32 @@ import java.util.concurrent.locks.ReentrantLock;
 class GameServer extends NetworkFather{
 	int playerCount;
 	String[] clientAddressStrings;
-	ReentrantLock threadLock;
 	FlagedString[] socketSendMsg,socketReceiveMsg;
 	Hand[] hand;
 	static OnlineUser onlineUser;
 	static CardStore cardStore = null;
+	boolean[] isPlayerGG;
 	GameServer(int _playerCount){
 		this.playerCount = _playerCount;
 		this.clientAddressStrings = new String[this.playerCount];
-		this.threadLock = new ReentrantLock();
 		this.socketSendMsg = new FlagedString[this.playerCount];
 		this.socketReceiveMsg = new FlagedString[this.playerCount];
 		this.hand = new Hand[this.playerCount];
-		if (cardStore == null)
+		if (cardStore == null){
 			cardStore = new CardStore(this.playerCount);
+			onlineUser = new OnlineUser(this.playerCount);
+		}
 	}
 	public void listenRequest(){
 		ServerSocket serverSocket = null;
-		ExecutorService threadExecuteor = Executors.newCachedThreadPool();
+		ExecutorService threadExecuteor = Executors.newCachedThreadPool(),
+						checkExecutor = Executors.newCachedThreadPool();
 		try{
 			serverSocket = new ServerSocket(serverPort);
 			while (true){
 				Socket socket = serverSocket.accept();
 				int clientID;
-				if ((clientID = this.getClientID(socket)) == this.playerCount){
+				if ((clientID = this.__getClientID__(socket)) == this.playerCount){
 					socket.close();
 					continue;
 				}
@@ -58,6 +61,14 @@ class GameServer extends NetworkFather{
 				threadExecuteor.execute(new RequestThread(
 					socket,socketSendMsg[clientID],socketReceiveMsg[clientID]
 					));
+				checkExecutor.execute(()->{
+					try {
+						while (this.socketReceiveMsg[clientID].getFlag())
+							Thread.sleep(1000);
+						this.__callNewCard__(clientID);
+					}
+					catch (InterruptedException e){}
+				});
 			}
 		}
 		catch (IOException e){
@@ -75,7 +86,7 @@ class GameServer extends NetworkFather{
 				}
 		}
 	}
-	private int getClientID(Socket socket) throws IOException{
+	private int __getClientID__(Socket socket) throws IOException{
 		int clientID;
 		for (clientID = -1; clientID < this.playerCount &&
 			clientAddressStrings[++clientID]!=socket.getInetAddress().getHostAddress(););
@@ -115,7 +126,31 @@ class GameServer extends NetworkFather{
 			}*/
 		}
 	}
-
+	private void __checkReceiveMsg__(Socket socket){
+		try {
+			int clientID = this.__getClientID__(socket);
+			this.__checkReceiveMsg__(clientID);
+		} catch (Exception e){}
+	}
+	private void __checkReceiveMsg__(int clientID) throws InterruptedException{
+		String[] strgroup = socketReceiveMsg[clientID].getMsg().split("\\n\\n");
+		if (strgroup[0] == "NEEDNEW")
+			this.__callNewCard__(clientID);
+	}
+	private void __callNewCard__(Socket socket){
+		try{
+			int clientID = this.__getClientID__(socket);
+			this.__callNewCard__(clientID);
+		} catch (Exception e){}
+	}
+	private void __callNewCard__(int clientID) throws InterruptedException{
+		int pointNew = cardStore.getNextPoint();
+		hand[clientID].addPoint(pointNew);
+		String str = String.format("NEW\\n\\n%d", pointNew);
+		while (socketSendMsg[clientID].getFlag())
+			Thread.sleep(500);
+		socketSendMsg[clientID].setMsg(str);
+	}
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
 		FlagedString socketSendMsg,socketReceiveMsg;
@@ -146,6 +181,7 @@ class GameServer extends NetworkFather{
 					Runnable runnable = () -> {
 						try {
 							this.socketReceiveMsg.setMsg(this.dataInputStream.readUTF());
+							
 						} catch (Exception e){}
 					};
 					Thread thread = new Thread(runnable);
