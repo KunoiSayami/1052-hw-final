@@ -24,6 +24,7 @@ Thread | http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-
 Thread synchronization | http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/ <br> http://www.52ij.com/jishu/4299.html
 Vector | https://docs.oracle.com/javase/8/docs/api/java/util/Vector.html <br> https://www.tutorialspoint.com/java/java_vector_class.htm
 String.split | https://stackoverflow.com/questions/3481828/how-to-split-a-string-in-java
+File | https://www.tutorialspoint.com/java/java_file_class.htm
 
 ## LICENSE
 

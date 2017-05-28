@@ -45,10 +45,10 @@ class GameServer extends NetworkFather{
 			while (true){
 				Socket socket = serverSocket.accept();
 				int clientID;
-				for (clientID = -1; clientID < this.playerCount &&
-					clientAddressStrings[++clientID]!=socket.getInetAddress().getHostAddress(););
-				if (clientID == this.playerCount)
+				if ((clientID = this.getClientID(socket)) == this.playerCount){
+					socket.close();
 					continue;
+				}
 				onlineUser.write(socket);
 				/*{
 					IndexOutOfBoundsException indexOutOfBoundsException = 
@@ -74,6 +74,12 @@ class GameServer extends NetworkFather{
 					e.printStackTrace();
 				}
 		}
+	}
+	private int getClientID(Socket socket) throws IOException{
+		int clientID;
+		for (clientID = -1; clientID < this.playerCount &&
+			clientAddressStrings[++clientID]!=socket.getInetAddress().getHostAddress(););
+		return clientID;
 	}
 
 	public void insertClient(String clientAddress){
@@ -130,20 +136,20 @@ class GameServer extends NetworkFather{
 			try {
 				this.dataInputStream = new DataInputStream(this.clientSocket.getInputStream());
 				this.dataOutputStream = new DataOutputStream(this.clientSocket.getOutputStream());
-				/** 
-				 * DataInputStream.readUTF will block our code. So, I create a new thread to
-				 * process read action.
-				 * REFERENCE : https://coderanch.com/t/278776/java/readInt-DataInputStream-class-block
-				 */
-				Runnable runnable = () -> {
-					try {
-						this.socketReceiveMsg.setMsg(this.dataInputStream.readUTF());
-					} catch (Exception e){}
-				};
-				Thread thread = new Thread(runnable);
-				thread.start();
 				if (this.dataInputStream.readUTF() == "SYN"){
 					this.dataOutputStream.writeUTF("ACK");
+					/** 
+					 * DataInputStream.readUTF will block our code. So, I create a new thread to
+					 * process read action.
+					 * REFERENCE : https://coderanch.com/t/278776/java/readInt-DataInputStream-class-block
+					 */
+					Runnable runnable = () -> {
+						try {
+							this.socketReceiveMsg.setMsg(this.dataInputStream.readUTF());
+						} catch (Exception e){}
+					};
+					Thread thread = new Thread(runnable);
+					thread.start();
 					while (true){
 						while (!socketSendMsg.getFlag())
 							try{Thread.sleep(1000);} catch (InterruptedException e){}
@@ -153,6 +159,9 @@ class GameServer extends NetworkFather{
 			}
 			catch (IOException e){
 				e.printStackTrace();
+			}
+			finally {
+				this.close();
 			}
 		}
 		public void close(){
@@ -164,9 +173,8 @@ class GameServer extends NetworkFather{
 				if (this.dataOutputStream != null)
 					this.dataOutputStream.close();
 			} catch (IOException e){
-				// RESERVE FOR FEATURE
+				// TODO : RESERVE FOR FEATURE
 			}
-			
 		}
 	}
 }
