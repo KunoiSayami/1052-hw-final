@@ -15,10 +15,8 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
 
 class GameServer extends NetworkFather{
 	int playerCount;
@@ -77,6 +75,8 @@ class GameServer extends NetworkFather{
 		finally{
 			if (threadExecuteor != null)
 				threadExecuteor.shutdown();
+			if (checkExecutor != null)
+				checkExecutor.shutdown();
 			if (serverSocket != null)
 				try{
 					serverSocket.close();
@@ -126,6 +126,7 @@ class GameServer extends NetworkFather{
 			}*/
 		}
 	}
+	@SuppressWarnings("unused")
 	private void __checkReceiveMsg__(Socket socket){
 		try {
 			int clientID = this.__getClientID__(socket);
@@ -137,6 +138,7 @@ class GameServer extends NetworkFather{
 		if (strgroup[0] == "NEEDNEW")
 			this.__callNewCard__(clientID);
 	}
+	@SuppressWarnings("unused")
 	private void __callNewCard__(Socket socket){
 		try{
 			int clientID = this.__getClientID__(socket);
