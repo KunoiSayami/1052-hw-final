@@ -25,7 +25,8 @@ class GameServer extends NetworkFather{
 	Hand[] hand;
 	static OnlineUser onlineUser;
 	static CardStore cardStore = null;
-	boolean[] isPlayerGG;
+	//boolean[] isPlayerGG;
+	
 	GameServer(int _playerCount){
 		this.playerCount = _playerCount;
 		this.clientAddressStrings = new String[this.playerCount];
@@ -103,6 +104,7 @@ class GameServer extends NetworkFather{
 			new IndexOutOfBoundsException();
 		throw indexOutOfBoundsException;
 	}
+
 	public void insertClient(String szClientAddress[]){
 		for (String i : szClientAddress)
 			this.insertClient(i);
@@ -126,6 +128,7 @@ class GameServer extends NetworkFather{
 			}*/
 		}
 	}
+
 	@SuppressWarnings("unused")
 	private void __checkReceiveMsg__(Socket socket){
 		try {
@@ -133,11 +136,13 @@ class GameServer extends NetworkFather{
 			this.__checkReceiveMsg__(clientID);
 		} catch (Exception e){}
 	}
+
 	private void __checkReceiveMsg__(int clientID) throws InterruptedException{
 		String[] strgroup = socketReceiveMsg[clientID].getMsg().split("\\n\\n");
 		if (strgroup[0] == "NEEDNEW")
 			this.__callNewCard__(clientID);
 	}
+
 	@SuppressWarnings("unused")
 	private void __callNewCard__(Socket socket){
 		try{
@@ -145,6 +150,7 @@ class GameServer extends NetworkFather{
 			this.__callNewCard__(clientID);
 		} catch (Exception e){}
 	}
+
 	private void __callNewCard__(int clientID) throws InterruptedException{
 		int pointNew = cardStore.getNextPoint();
 		hand[clientID].addPoint(pointNew);
@@ -153,11 +159,13 @@ class GameServer extends NetworkFather{
 			Thread.sleep(500);
 		socketSendMsg[clientID].setMsg(str);
 	}
+
 	class RequestThread implements Runnable{
 		private Socket clientSocket;
 		FlagedString socketSendMsg,socketReceiveMsg;
 		DataInputStream dataInputStream = null;
 		DataOutputStream dataOutputStream = null;
+
 		public RequestThread(
 			Socket _clientSocket,
 			FlagedString _socketSendMsg,FlagedString _socketReceiveMsg

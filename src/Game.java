@@ -5,12 +5,21 @@
  *
  */
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.InetAddress;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class Game extends JFrame{
 	static final int maxplayer = 4;
@@ -19,6 +28,9 @@ public class Game extends JFrame{
 	GameServer gameServer;
 	Thread gameServerThread;
 	String targetServerAddress;
+	JPanel underTitleJPanel,mainJPanel;
+	JButton getReadyJButton,aboutMeJButton,exitJButton;
+
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
@@ -26,17 +38,59 @@ public class Game extends JFrame{
 			this.chooseServerType();
 		gameServer = null;
 		gameServerThread = null;
+		/**
+		 * Initialize frame
+		 */
+		this.setLayout(new BorderLayout());
+		this.initBaseMenu();
+		this.setResizable(false);
+
 	}
+	/**
+	 * Initialize Memu
+	 */
+	void initBaseMenu(){
+		this.underTitleJPanel = new JPanel();
+		this.underTitleJPanel.setLayout(new GridLayout(1,4,5,10));
+		this.getReadyJButton = new JButton("Ready");
+		this.getReadyJButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tcpClient.write("READY\\n\\n");
+				getReadyJButton.setEnabled(false);
+			}
+		});
+		this.aboutMeJButton = new JButton("About me");
+		this.aboutMeJButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				aboutMeJButton.setEnabled(false);
+				aboutMe();
+				aboutMeJButton.setEnabled(true);
+			}
+		});
+		this.exitJButton = new JButton("Exit");
+		this.exitJButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				System.exit(0);
+			}
+		});
+		this.underTitleJPanel.add(getReadyJButton);
+		this.underTitleJPanel.add(aboutMeJButton);
+		this.underTitleJPanel.add(exitJButton);
+	}
+
 	void createServer(){
-		Runnable gameServerDaemon = () ->{
+		Runnable gameServerDaemon = () -> {
 			this.gameServer = new GameServer(this.playerCount);
 		};
 		this.gameServerThread = new Thread(gameServerDaemon);
-		gameServerThread.start();
+		this.gameServerThread.run();
 		try {
 			tcpClient = new TcpClient(InetAddress.getLocalHost().getHostAddress());
 		} catch (Exception e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return ;
 	}
@@ -52,8 +106,6 @@ public class Game extends JFrame{
 		catch (RuntimeException e){
 			JOptionPane.showMessageDialog(null, "Cannot find server!\nProgram will now exit.",
 				"Client Error",JOptionPane.ERROR_MESSAGE);
-			//e.printStackTrace();
-			//abort();
 			System.exit(5);
 		}
 		catch (Exception e){
@@ -86,7 +138,7 @@ public class Game extends JFrame{
 		//JOptionPane.showMessageDialog(null, ""+opt);
 		if (result == 2 || result == -1)
 			System.exit(0);
-		return result == 0? 1 : this.playerchooseEx();
+		return result == 0 ? 1 : this.playerchooseEx();
 	}
 	int playerchooseEx(){
 		String playerstr = JOptionPane.showInputDialog("Please input player count");

@@ -25,6 +25,7 @@ Thread synchronization | http://winterbe.com/posts/2015/04/30/java8-concurrency-
 Vector | https://docs.oracle.com/javase/8/docs/api/java/util/Vector.html <br> https://www.tutorialspoint.com/java/java_vector_class.htm
 String.split | https://stackoverflow.com/questions/3481828/how-to-split-a-string-in-java
 File | https://www.tutorialspoint.com/java/java_file_class.htm
+Lambda expression | http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html#section2
 
 ## LICENSE
 
