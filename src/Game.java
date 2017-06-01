@@ -6,6 +6,7 @@
  */
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 public class Game extends JFrame{
 	static final int maxplayer = 4;
@@ -30,7 +32,7 @@ public class Game extends JFrame{
 	String targetServerAddress;
 	JPanel underTitleJPanel,mainJPanel;
 	JButton getReadyJButton,aboutMeJButton,exitJButton;
-
+	JTextArea menutTextArea;
 	Game(){
 		super("21 point");
 		this.playerCount = this.gametypechoose();
@@ -43,6 +45,7 @@ public class Game extends JFrame{
 		 */
 		this.setLayout(new BorderLayout());
 		this.initBaseMenu();
+		this.add(this.underTitleJPanel,BorderLayout.NORTH);
 		this.setResizable(false);
 
 	}
@@ -52,6 +55,9 @@ public class Game extends JFrame{
 	void initBaseMenu(){
 		this.underTitleJPanel = new JPanel();
 		this.underTitleJPanel.setLayout(new GridLayout(1,4,5,10));
+
+		this.menutTextArea = new JTextArea("");
+		
 		this.getReadyJButton = new JButton("Ready");
 		this.getReadyJButton.addActionListener(new ActionListener(){
 			@Override
@@ -60,6 +66,7 @@ public class Game extends JFrame{
 				getReadyJButton.setEnabled(false);
 			}
 		});
+
 		this.aboutMeJButton = new JButton("About me");
 		this.aboutMeJButton.addActionListener(new ActionListener(){
 			@Override
@@ -69,6 +76,7 @@ public class Game extends JFrame{
 				aboutMeJButton.setEnabled(true);
 			}
 		});
+
 		this.exitJButton = new JButton("Exit");
 		this.exitJButton.addActionListener(new ActionListener(){
 			@Override
@@ -76,11 +84,18 @@ public class Game extends JFrame{
 				System.exit(0);
 			}
 		});
-		this.underTitleJPanel.add(getReadyJButton);
-		this.underTitleJPanel.add(aboutMeJButton);
-		this.underTitleJPanel.add(exitJButton);
+
+		this.underTitleJPanel.add(this.menutTextArea);
+		this.underTitleJPanel.add(this.getReadyJButton);
+		this.underTitleJPanel.add(this.aboutMeJButton);
+		this.underTitleJPanel.add(this.exitJButton);
 	}
 
+	void initGameFrame(){
+		this.mainJPanel = new JPanel();
+		this.mainJPanel.setLayout(new GridLayout();
+
+	}
 	void createServer(){
 		Runnable gameServerDaemon = () -> {
 			this.gameServer = new GameServer(this.playerCount);
@@ -96,7 +111,9 @@ public class Game extends JFrame{
 	}
 	void searchServer(){
 		try {
+			//Must start udp server first
 			UdpServer udpServer = new UdpServer(true, playerCount);
+			udpServer.run();
 			new UdpClient("255.255.255.255", 9487, "ACK");
 			//Sleep 5 seconds to wait server response
 			Thread.sleep(5000);
