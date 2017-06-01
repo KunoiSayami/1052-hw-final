@@ -57,12 +57,14 @@ public class Game extends JFrame{
 		this.underTitleJPanel.setLayout(new GridLayout(1,4,5,10));
 
 		this.menutTextArea = new JTextArea("");
-		
+
 		this.getReadyJButton = new JButton("Ready");
 		this.getReadyJButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				tcpClient.write("READY\\n\\n");
+				try{
+					tcpClient.write("READY\\n\\n");
+				} catch (Exception exception){}
 				getReadyJButton.setEnabled(false);
 			}
 		});
@@ -93,8 +95,8 @@ public class Game extends JFrame{
 
 	void initGameFrame(){
 		this.mainJPanel = new JPanel();
-		this.mainJPanel.setLayout(new GridLayout();
-
+		this.mainJPanel.setLayout(new GridLayout(2,this.playerCount+1,20,20));
+	
 	}
 	void createServer(){
 		Runnable gameServerDaemon = () -> {
@@ -189,6 +191,5 @@ public class Game extends JFrame{
 			} catch (Exception e){}*/
 			String me = authorString + AboutMe.rawAboutMe;
 			JOptionPane.showMessageDialog(null, me);
-		}
 	}
 }
