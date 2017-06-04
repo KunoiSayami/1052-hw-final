@@ -18,15 +18,17 @@ import javax.swing.JTextField;
 public class Game extends JFrame{
 	int aiLevel;
 	static Random random = new Random();
-	JPanel undertitleJPanel,textJPanel;
+	JPanel undertitleJPanel,mainJPanel;
 	JButton aboutButton,newGameButton;
 	JTextField statusArea;
 	public Game(){
 		super("Scissors stone cloth");
 		this.setAilevel();
 		this.initUnderTitleJPanel();
+		this.initMainJPanel();
 		this.setSize(300,300);
 		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
 	void initUnderTitleJPanel(){
@@ -49,8 +51,12 @@ public class Game extends JFrame{
 		this.undertitleJPanel.add(this.aboutButton);
 
 		this.add(this.undertitleJPanel);
+	}
+
+	void initMainJPanel(){
 		
 	}
+
 	private void setAilevel(){
 		String[] options={"Low Level","High Level","Exit"};
 		int result = JOptionPane.showOptionDialog(null,
@@ -70,5 +76,7 @@ public class Game extends JFrame{
 				this.aiLevel = result;
 		}
 	}
-
+	private int callNext(){
+		return random.nextInt(3);
+	}
 }
