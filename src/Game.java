@@ -8,6 +8,8 @@
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Locale;
 import java.util.Random;
 
@@ -20,13 +22,16 @@ import javax.swing.JTextField;
 public class Game extends JFrame{
 	int aiLevel;
 	static Random random = new Random();
-	JPanel undertitleJPanel,gameJPanel,actionJPanel;
+	JPanel undertitleJPanel,gameJPanel,actionJPanel,menuJPanel;
 	JButton aboutButton,newGameButton;
 	JTextField statusField,gameStatusField;
 	JButton scissorsButton,stoneButton,clothButton;
 	StaticLanguage staticLanguage;
+	int totalStatistics,winStatistics;
 	public Game(){
 		super("Scissors stone cloth");
+		this.totalStatistics = 0;
+		this.winStatistics = 0;
 		this.setLanguage();
 		this.setAilevel();
 		this.setLayout(new BorderLayout(30,0));
@@ -37,14 +42,16 @@ public class Game extends JFrame{
 		this.initUnderTitleJPanel();
 		this.initMainJPanel();
 		this.initActionJPanel();
-
+		
+		this.updateStatusField();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 	void initUnderTitleJPanel(){
 		this.undertitleJPanel = new JPanel();
-		this.undertitleJPanel.setLayout(new GridLayout(1,3,10,20));
-		//this.undertitleJPanel.setSize(100, 100);
+		this.undertitleJPanel.setLayout(new GridLayout(1,2,10,20));
+		this.menuJPanel = new JPanel();
+		this.menuJPanel.setLayout(new GridLayout(1,2,10,20));
 
 		this.statusField = new JTextField("normal");
 		this.statusField.setHorizontalAlignment(JTextField.CENTER);
@@ -53,20 +60,28 @@ public class Game extends JFrame{
 		this.statusField.setFocusable(false);
 		this.undertitleJPanel.add(this.statusField);
 
-		this.newGameButton = new JButton("New Game"); //NEW GAME!
-		// TODO : New game action
-		this.undertitleJPanel.add(newGameButton);
+		this.newGameButton = new JButton(this.staticLanguage.newGameString); //NEW GAME!
+		this.newGameButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateGameTextField();
+				totalStatistics = 0;
+				winStatistics = 0;
+			}
+		});
+		this.menuJPanel.add(this.newGameButton);
 
-		this.aboutButton = new JButton("About");
-		this.undertitleJPanel.add(this.aboutButton);
+		this.aboutButton = new JButton(this.staticLanguage.aboutMeString);
+		this.menuJPanel.add(this.aboutButton);
 
+		this.undertitleJPanel.add(this.menuJPanel);
 		this.add(this.undertitleJPanel,BorderLayout.NORTH);
 	}
 
 	void initMainJPanel(){
 		this.gameJPanel = new JPanel();
 		this.gameJPanel.setLayout(new GridLayout(1,1));
-		
+
 		this.gameStatusField = new JTextField("This is game text field");
 		this.gameStatusField.setHorizontalAlignment(JTextField.CENTER);
 		this.gameStatusField.setEditable(false);
@@ -80,18 +95,116 @@ public class Game extends JFrame{
 		this.actionJPanel = new JPanel();
 		this.actionJPanel.setLayout(new GridLayout(1,3,10,20));
 
-		this.scissorsButton = new JButton("Scissors");
+		this.scissorsButton = new JButton(this.staticLanguage.scissorsString);
+		this.scissorsButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGameProcess(0);
+			}
+		});
 		this.actionJPanel.add(this.scissorsButton);
 
-		this.stoneButton = new JButton("Stone");
+		this.stoneButton = new JButton(this.staticLanguage.stoneString);
+		this.stoneButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGameProcess(1);	
+			}
+		});
 		this.actionJPanel.add(this.stoneButton);
 
-		this.clothButton = new JButton("Cloth");
+		this.clothButton = new JButton(this.staticLanguage.clothString);
+		this.clothButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainGameProcess(2);
+			}
+		});
 		this.actionJPanel.add(this.clothButton);
 
 		this.add(this.actionJPanel,BorderLayout.SOUTH);
 	}
 
+	private void mainGameProcess(int playerChoose){
+		this.totalStatistics++;
+		if (aiLevel==1){
+			this.updateStatusField();
+			switch(playerChoose){
+				case 0:
+					this.updateGameTextField(playerChoose, 1);
+					break;
+				case 1:
+					this.updateGameTextField(playerChoose, 2);
+					break;
+				case 2:
+					this.updateGameTextField(playerChoose, 0);
+					break;
+				default:
+					RuntimeException runtimeException = new RuntimeException();
+					throw runtimeException;
+			}
+			return ;
+		}
+		int aiChoose = this.callNext();
+		int result = this.checkResult(playerChoose, aiChoose);
+		if (result == 1)
+			this.winStatistics++;
+		this.updateStatusField();
+		switch (result){
+			case -1:
+				this.updateGameTextField(playerChoose, aiChoose, this.staticLanguage.defeatString);
+				break;
+			case 0:
+				this.updateGameTextField(playerChoose, aiChoose, this.staticLanguage.drawString);
+				break;
+			case 1:
+				this.updateGameTextField(playerChoose, aiChoose, this.staticLanguage.victoryString);
+				break;
+			default:
+				throw new RuntimeException();
+		}
+		throw new RuntimeException();
+	}
+
+	private void updateStatusField(){
+		if (totalStatistics != 0)
+			this.statusField.setText(String.format(this.staticLanguage.statusString, 
+				this.totalStatistics,
+				(float)this.winStatistics/(float)this.totalStatistics));
+		else
+			this.statusField.setText(String.format(this.staticLanguage.statusString,
+				0,0.0));
+	}
+	private int checkResult(int playerChoose, int aiChoose){
+		return playerChoose==aiChoose?0:(aiChoose>playerChoose||(aiChoose==0 && playerChoose==2))?-1:1;
+	}
+	private String choose2String(int choose){
+		switch (choose){
+			case 0:
+				return this.staticLanguage.scissorsString;
+			case 1:
+				return this.staticLanguage.stoneString;
+			case 2:
+				return this.staticLanguage.stoneString;
+			default:
+				JOptionPane.showMessageDialog(null, "throw!","ERROR",JOptionPane.ERROR_MESSAGE);
+				RuntimeException runtimeException = new RuntimeException();
+				throw runtimeException;
+				//assert(false);
+		}
+	}
+	private void updateGameTextField(int playerChoose, int aiChoose){
+		this.updateGameTextField(playerChoose,aiChoose,
+			this.staticLanguage.defeatString);
+	}
+	private void updateGameTextField(int playerChoose, int aiChoose, String result){
+		this.gameStatusField.setText(String.format(this.staticLanguage.resultString, 
+			this.choose2String(playerChoose),this.choose2String(aiChoose),
+			result));
+	}
+	private void updateGameTextField(){
+		this.gameStatusField.setText("Click action button (Below these text) to start game");
+	}
 	private void setAilevel(){
 		String[] options={"Low Level","High Level","Exit"};
 		int result = JOptionPane.showOptionDialog(null,
@@ -109,7 +222,6 @@ public class Game extends JFrame{
 				this.aiLevel = result;
 		}
 	}
-
 	private void setLanguage(){
 		String[] options={"Chinese(Traditional)","English(Simplified)"};
 		int result = JOptionPane.showOptionDialog(null,
@@ -123,7 +235,8 @@ public class Game extends JFrame{
 				/**User select exit */
 				System.exit(0);
 			default:
-				this.staticLanguage = new StaticLanguage(result==1?"zh":"");
+				this.staticLanguage = new StaticLanguage(result==0?"zh":"");	
+				this.setTitle(this.staticLanguage.titleString);
 		}
 	}
 
@@ -134,12 +247,15 @@ public class Game extends JFrame{
 
 
 class StaticLanguage{
-	String statusString,resultString,scissorsString,stoneString,clothString;
-	String victoryString,defeatString,drawString;
+	public String statusString,resultString,scissorsString,stoneString,clothString;
+	public String victoryString,defeatString,drawString;
+	public String newGameString,aboutMeString;
+	public String titleString;
 	private void initString(String localeString){
 		switch (localeString){
 			case "zh":
-				this.statusString = "共進行:%d場比賽 勝率:%d%%";
+				this.titleString = "剪刀石頭布";
+				this.statusString = "共進行:%d場比賽 勝率:%.2f%%";
 				this.resultString = "你:%s 電腦:%s 你%s了！";
 				this.scissorsString = "剪刀";
 				this.stoneString = "石頭";
@@ -147,10 +263,13 @@ class StaticLanguage{
 				this.victoryString = "獲勝";
 				this.defeatString = "敗北";
 				this.drawString = "平局";
+				this.newGameString = "開始新遊戲";
+				this.aboutMeString = "關於";
 				break;
 			default:
+				this.titleString = "Scissors stone cloth";
 				this.statusString = "Number of Board:%d"+
-									"Winning percentage:%d%%";
+									"Winning percentage:%.2f%%";
 				this.resultString = "You:%s AI:%s You %s !";
 				this.scissorsString = "scissors";
 				this.stoneString = "stone";
@@ -158,6 +277,8 @@ class StaticLanguage{
 				this.victoryString = "victory";
 				this.defeatString = "defeat";
 				this.drawString = "draw";
+				this.newGameString = "New Game!";
+				this.aboutMeString = "About";
 		}
 	}
 	public StaticLanguage(){
