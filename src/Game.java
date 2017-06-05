@@ -6,6 +6,7 @@
  */
 
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Random;
 
@@ -18,30 +19,36 @@ import javax.swing.JTextField;
 public class Game extends JFrame{
 	int aiLevel;
 	static Random random = new Random();
-	JPanel undertitleJPanel,mainJPanel;
+	JPanel undertitleJPanel,gameJPanel,actionJPanel;
 	JButton aboutButton,newGameButton;
-	JTextField statusArea;
+	JTextField statusField,gameStatusField;
+	JButton scissorsButton,stoneButton,clothButton;
 	public Game(){
 		super("Scissors stone cloth");
 		this.setAilevel();
+		this.setLayout(new BorderLayout(30,0));
+		this.setSize(500,300);
+		this.setResizable(false);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		this.initUnderTitleJPanel();
 		this.initMainJPanel();
-		this.setSize(300,300);
+		this.initActionJPanel();
+
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
 	void initUnderTitleJPanel(){
 		this.undertitleJPanel = new JPanel();
-		this.undertitleJPanel.setLayout(new GridLayout(1,3));
+		this.undertitleJPanel.setLayout(new GridLayout(1,3,10,20));
 		//this.undertitleJPanel.setSize(100, 100);
 
-		this.statusArea = new JTextField("normal");
-		this.statusArea.setHorizontalAlignment(JTextField.CENTER);
-		this.statusArea.setEditable(false);
-		//this.statusArea.requestFocus();
-		this.statusArea.setFocusable(false);
-		this.undertitleJPanel.add(this.statusArea);
+		this.statusField = new JTextField("normal");
+		this.statusField.setHorizontalAlignment(JTextField.CENTER);
+		this.statusField.setEditable(false);
+		//this.statusField.requestFocus();
+		this.statusField.setFocusable(false);
+		this.undertitleJPanel.add(this.statusField);
 
 		this.newGameButton = new JButton("New Game"); //NEW GAME!
 		// TODO : New game action
@@ -50,11 +57,36 @@ public class Game extends JFrame{
 		this.aboutButton = new JButton("About");
 		this.undertitleJPanel.add(this.aboutButton);
 
-		this.add(this.undertitleJPanel);
+		this.add(this.undertitleJPanel,BorderLayout.NORTH);
 	}
 
 	void initMainJPanel(){
+		this.gameJPanel = new JPanel();
+		this.gameJPanel.setLayout(new GridLayout(1,1));
 		
+		this.gameStatusField = new JTextField("This is game text field");
+		this.gameStatusField.setHorizontalAlignment(JTextField.CENTER);
+		this.gameStatusField.setEditable(false);
+		this.gameStatusField.setFocusable(false);
+		this.gameJPanel.add(this.gameStatusField);
+
+		this.add(this.gameJPanel,BorderLayout.CENTER);
+	}
+
+	void initActionJPanel(){
+		this.actionJPanel = new JPanel();
+		this.actionJPanel.setLayout(new GridLayout(1,3,10,20));
+
+		this.scissorsButton = new JButton("Scissors");
+		this.actionJPanel.add(this.scissorsButton);
+
+		this.stoneButton = new JButton("Stone");
+		this.actionJPanel.add(this.stoneButton);
+
+		this.clothButton = new JButton("Cloth");
+		this.actionJPanel.add(this.clothButton);
+
+		this.add(this.actionJPanel,BorderLayout.SOUTH);
 	}
 
 	private void setAilevel(){
