@@ -90,6 +90,7 @@ public class Game extends JFrame{
 				jFrame.add(topArea,BorderLayout.NORTH);
 				topArea.setFocusable(false);
 				topArea.setEditable(false);
+				Font font = new Font("Consola", Font.PLAIN, 12);		
 				String gplStr = "";
 				try {
 					File gplFile = new File("LICENSE");
@@ -102,6 +103,7 @@ public class Game extends JFrame{
 					gplStr = "https://www.gnu.org/licenses/gpl-3.0.txt";
 				}
 				JTextArea gplArea = new JTextArea(gplStr);
+				gplArea.setFont(font);
 				JScrollPane scroll = new JScrollPane (gplArea, 
   						JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 				jFrame.add(scroll);
