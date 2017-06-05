@@ -8,6 +8,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -110,5 +111,42 @@ public class Game extends JFrame{
 	}
 	private int callNext(){
 		return random.nextInt(3);
+	}
+}
+
+
+class StaticLanguage{
+	String statusString,resultString,scissorsString,stoneString,clothString;
+	String victoryString,defeatString,drawString;
+	private void initString(String localeString){
+		switch (localeString){
+			case "zh":
+				this.statusString = "共進行:%d場比賽 勝率:%d%%";
+				this.resultString = "你:%s 電腦:%s 你%s了！";
+				this.scissorsString = "剪刀";
+				this.stoneString = "石頭";
+				this.clothString = "布";
+				this.victoryString = "獲勝";
+				this.defeatString = "敗北";
+				this.drawString = "平局";
+				break;
+			default:
+				this.statusString = "Number of Board:%d"+
+									"Winning percentage:%d%%";
+				this.resultString = "You:%s AI:%s You %s !";
+				this.scissorsString = "scissors";
+				this.stoneString = "stone";
+				this.clothString = "cloth";
+				this.victoryString = "victory";
+				this.defeatString = "defeat";
+				this.drawString = "draw";
+		}
+	}
+	public StaticLanguage(){
+		if (Locale.getDefault().toString().indexOf("zh") != -1) this.initString("zh");
+		else this.initString("");
+	}
+	public StaticLanguage(String locale){
+		this.initString(locale);
 	}
 }
