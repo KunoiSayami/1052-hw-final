@@ -123,7 +123,7 @@ public class Game extends JFrame{
 		this.gameJPanel.setLayout(new GridLayout(1,1));
 
 		this.gameStatusField = new JTextField("This is game text field");
-		Font font = new Font("Consola", Font.PLAIN, 20);
+		Font font = new Font("Consola", Font.BOLD, 20);
 		this.gameStatusField.setFont(font);
 		this.gameStatusField.setHorizontalAlignment(JTextField.CENTER);
 		this.gameStatusField.setEditable(false);
