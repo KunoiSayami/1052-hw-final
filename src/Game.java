@@ -98,6 +98,7 @@ public class Game extends JFrame{
 					gplInput.close();
 				} catch (IOException ioException){
 					ioException.printStackTrace();
+					gplStr = "https://www.gnu.org/licenses/gpl-3.0.txt";
 				}
 				JTextArea gplArea = new JTextArea(gplStr);
 				JScrollPane scroll = new JScrollPane (gplArea, 
@@ -222,7 +223,7 @@ public class Game extends JFrame{
 			case 1:
 				return this.staticLanguage.stoneString;
 			case 2:
-				return this.staticLanguage.stoneString;
+				return this.staticLanguage.clothString;
 			default:
 				JOptionPane.showMessageDialog(null, "throw!","ERROR",JOptionPane.ERROR_MESSAGE);
 				throw new RuntimeException();
