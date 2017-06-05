@@ -35,7 +35,7 @@ public class Game extends JFrame{
 		this.setLanguage();
 		this.setAilevel();
 		this.setLayout(new BorderLayout(30,0));
-		this.setSize(500,300);
+		this.setSize(600,300);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -268,7 +268,7 @@ class StaticLanguage{
 				break;
 			default:
 				this.titleString = "Scissors stone cloth";
-				this.statusString = "Number of Board:%d"+
+				this.statusString = "Total:%d |"+
 									"Winning percentage:%.2f%%";
 				this.resultString = "You:%s AI:%s You %s !";
 				this.scissorsString = "scissors";
