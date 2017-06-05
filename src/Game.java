@@ -24,8 +24,10 @@ public class Game extends JFrame{
 	JButton aboutButton,newGameButton;
 	JTextField statusField,gameStatusField;
 	JButton scissorsButton,stoneButton,clothButton;
+	StaticLanguage staticLanguage;
 	public Game(){
 		super("Scissors stone cloth");
+		this.setLanguage();
 		this.setAilevel();
 		this.setLayout(new BorderLayout(30,0));
 		this.setSize(500,300);
@@ -97,9 +99,7 @@ public class Game extends JFrame{
 						"Select AI Level",
 						JOptionPane.DEFAULT_OPTION,
 	  					JOptionPane.INFORMATION_MESSAGE,null,
-						options,"Low Level");
-		if (result == 2 || result == -1)
-			System.exit(0);
+						options,options[0]);
 		switch (result){
 			case 2:
 			case -1:
@@ -109,6 +109,24 @@ public class Game extends JFrame{
 				this.aiLevel = result;
 		}
 	}
+
+	private void setLanguage(){
+		String[] options={"Chinese(Traditional)","English(Simplified)"};
+		int result = JOptionPane.showOptionDialog(null,
+						"Please select Language",
+						"Select Game Language",
+						JOptionPane.DEFAULT_OPTION,
+	  					JOptionPane.INFORMATION_MESSAGE,null,
+						options,options[0]);
+		switch (result){
+			case -1:
+				/**User select exit */
+				System.exit(0);
+			default:
+				this.staticLanguage = new StaticLanguage(result==1?"zh":"");
+		}
+	}
+
 	private int callNext(){
 		return random.nextInt(3);
 	}
