@@ -10,13 +10,18 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class Game extends JFrame{
@@ -44,6 +49,7 @@ public class Game extends JFrame{
 		this.initActionJPanel();
 		
 		this.updateStatusField();
+		this.updateGameTextField();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
@@ -64,14 +70,46 @@ public class Game extends JFrame{
 		this.newGameButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateGameTextField();
 				totalStatistics = 0;
 				winStatistics = 0;
+				updateGameTextField();
+				updateStatusField();
 			}
 		});
 		this.menuJPanel.add(this.newGameButton);
 
 		this.aboutButton = new JButton(this.staticLanguage.aboutMeString);
+		this.aboutButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame jFrame = new JFrame(staticLanguage.aboutMeString);
+				jFrame.setLayout(new BorderLayout(30,0));
+				JTextArea topArea = new JTextArea("Copyright (C) 2017 Too-Naive \nAll rights reseved.\n\n"+AboutMe.rawAboutMe);
+				topArea.setLineWrap(true);
+				jFrame.add(topArea,BorderLayout.NORTH);
+				topArea.setFocusable(false);
+				topArea.setEditable(false);
+				String gplStr = "";
+				try {
+					File gplFile = new File("LICENSE");
+					Scanner gplInput = new Scanner(gplFile);
+					while (gplInput.hasNextLine())
+						gplStr += gplInput.nextLine() +"\n";
+					gplInput.close();
+				} catch (IOException ioException){
+					ioException.printStackTrace();
+				}
+				JTextArea gplArea = new JTextArea(gplStr);
+				JScrollPane scroll = new JScrollPane (gplArea, 
+  						JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+				jFrame.add(scroll);
+				jFrame.setSize(500,600);
+				jFrame.setLocationRelativeTo(null);
+				jFrame.setFocusable(true);
+				gplArea.setEditable(false);
+				jFrame.setVisible(true);
+			}
+		});
 		this.menuJPanel.add(this.aboutButton);
 
 		this.undertitleJPanel.add(this.menuJPanel);
@@ -140,8 +178,7 @@ public class Game extends JFrame{
 					this.updateGameTextField(playerChoose, 0);
 					break;
 				default:
-					RuntimeException runtimeException = new RuntimeException();
-					throw runtimeException;
+					throw new RuntimeException();
 			}
 			return ;
 		}
@@ -163,7 +200,7 @@ public class Game extends JFrame{
 			default:
 				throw new RuntimeException();
 		}
-		throw new RuntimeException();
+		//throw new RuntimeException();
 	}
 
 	private void updateStatusField(){
@@ -188,8 +225,7 @@ public class Game extends JFrame{
 				return this.staticLanguage.stoneString;
 			default:
 				JOptionPane.showMessageDialog(null, "throw!","ERROR",JOptionPane.ERROR_MESSAGE);
-				RuntimeException runtimeException = new RuntimeException();
-				throw runtimeException;
+				throw new RuntimeException();
 				//assert(false);
 		}
 	}
@@ -206,7 +242,7 @@ public class Game extends JFrame{
 		this.gameStatusField.setText("Click action button (Below these text) to start game");
 	}
 	private void setAilevel(){
-		String[] options={"Low Level","High Level","Exit"};
+		String[] options={"Low Level","High Level"};
 		int result = JOptionPane.showOptionDialog(null,
 						"Please select AI level You want",
 						"Select AI Level",
@@ -214,7 +250,6 @@ public class Game extends JFrame{
 	  					JOptionPane.INFORMATION_MESSAGE,null,
 						options,options[0]);
 		switch (result){
-			case 2:
 			case -1:
 				/**User select exit */
 				System.exit(0);
