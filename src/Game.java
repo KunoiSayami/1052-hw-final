@@ -11,8 +11,10 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.io.IOException;
+
 import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
@@ -85,12 +87,13 @@ public class Game extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				JFrame jFrame = new JFrame(staticLanguage.aboutMeString);
 				jFrame.setLayout(new BorderLayout(30,0));
+				Font font = new Font("Consola", Font.CENTER_BASELINE, 13);	
 				JTextArea topArea = new JTextArea("Copyright (C) 2017 Too-Naive \nAll rights reseved.\n\n"+AboutMe.rawAboutMe);
 				topArea.setLineWrap(true);
+				topArea.setFont(font);
 				jFrame.add(topArea,BorderLayout.NORTH);
 				topArea.setFocusable(false);
-				topArea.setEditable(false);
-				Font font = new Font("Consola", Font.PLAIN, 12);		
+				topArea.setEditable(false);	
 				String gplStr = "";
 				try {
 					File gplFile = new File("LICENSE");
@@ -253,7 +256,7 @@ public class Game extends JFrame{
 						"Please select AI level You want",
 						"Select AI Level",
 						JOptionPane.DEFAULT_OPTION,
-	  					JOptionPane.INFORMATION_MESSAGE,null,
+	  					JOptionPane.QUESTION_MESSAGE,null,
 						options,options[0]);
 		switch (result){
 			case -1:
@@ -269,12 +272,15 @@ public class Game extends JFrame{
 						"Please select Language",
 						"Select Game Language",
 						JOptionPane.DEFAULT_OPTION,
-	  					JOptionPane.INFORMATION_MESSAGE,null,
+	  					JOptionPane.QUESTION_MESSAGE,null,
 						options,options[0]);
 		switch (result){
 			case -1:
 				/**User select exit */
 				System.exit(0);
+			case 0:
+				JOptionPane.showMessageDialog(null, "Detected you have the use of Chinese to open the program"+
+				", if there is garbled in the translation process specified ' -encoding \"utf-8\" '","Notice",JOptionPane.INFORMATION_MESSAGE);
 			default:
 				this.staticLanguage = new StaticLanguage(result==0?"zh":"");	
 				this.setTitle(this.staticLanguage.titleString);
