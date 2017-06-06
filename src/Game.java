@@ -114,6 +114,8 @@ public class Game extends JFrame{
 				jFrame.setLocationRelativeTo(null);
 				jFrame.setFocusable(true);
 				gplArea.setEditable(false);
+				jFrame.setAlwaysOnTop(true);
+				jFrame.setResizable(false);
 				jFrame.setVisible(true);
 			}
 		});
@@ -216,7 +218,7 @@ public class Game extends JFrame{
 		if (totalStatistics != 0)
 			this.statusField.setText(String.format(this.staticLanguage.statusString, 
 				this.totalStatistics,
-				(float)this.winStatistics/(float)this.totalStatistics));
+				((float)this.winStatistics/(float)this.totalStatistics)*100));
 		else
 			this.statusField.setText(String.format(this.staticLanguage.statusString,
 				0,0.0));
