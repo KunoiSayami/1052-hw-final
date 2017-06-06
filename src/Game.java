@@ -100,7 +100,7 @@ public class Game extends JFrame{
 					gplInput.close();
 				} catch (IOException ioException){
 					ioException.printStackTrace();
-					gplStr = "https://www.gnu.org/licenses/gpl-3.0.txt";
+					gplStr = "https://www.gnu.org/licenses/gpl-3.0.txt\n"+ioException.getMessage();
 				}
 				JTextArea gplArea = new JTextArea(gplStr);
 				gplArea.setFont(font);
